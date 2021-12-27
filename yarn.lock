@@ -904,10 +904,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/chrome@^0.0.127":
-  version "0.0.127"
-  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.127.tgz#9e29f351d558f60e95326ceadc586fdcc824151b"
-  integrity sha512-hBB9EApLYKKn2GvklVkTxVP6vZvxsH9okyIRUinNtMzZHIgIKWQk/ESbX+O5g4Bihfy38+aFGn7Kl7Cxou5JUg==
+"@types/chrome@^0.0.173":
+  version "0.0.173"
+  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.173.tgz#a15ef32b881facb86d1cd10e15a9cf38c342cf2d"
+  integrity sha512-SLqDwQxA2S3sdQcbjT/fKvD8tYXY82ZWbTfwNAOyjtfnmNqr6cup8/uTs3PfYOKHb/RRfeTKDMeT+aix6cVviw==
   dependencies:
     "@types/filesystem" "*"
     "@types/har-format" "*"
