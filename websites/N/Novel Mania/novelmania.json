@@ -1,54 +1,54 @@
 {
-    "novelmania.volume": {
-        "description": "Text for when user's reading a novel with volumes.",
-        "message": "Volume"
-    },
-    "novelmania.book": {
-        "description": "Text for when user's reading a novel with books.",
-        "message": "Book"
-    },
-    "novelmania.viewingProfile": {
-        "description": "Text for when user's visualizing someone's profile.",
-        "message": "Viewing profile"
-    },
-    "novelmania.lists": {
-        "description": "Text for when user's visualizing 'lists' page.",
-        "message": "listas"
-    },
-    "novelmania.news": {
-        "description": "Text for when user's visualizing 'news' page.",
-        "message": "news"
-    },
-    "novelmania.genre": {
-        "description": "Text for when user's browsing genres.",
-        "message": "genres"
-    },
-    "novelmania.novel": {
-        "description": "Just a placeholder for a novel title. It doesn't matter what it is, it will be replaced by the actual title.",
-        "message": "novel"
-    },
-    "novelmania.readNovelButton": {
-        "description": "",
-        "message": "Read this novel!"
-    },
-    "novelmania.readChapterButton": {
-        "description": "Text from 'reading chapter button'. Call to read along!",
-        "message": "Read this chapter!"
-    },
-    "novelmania.visitWebsiteButton": {
-        "description": "Text from 'visit website button'.",
-        "message": "Visit this website!"
-    },
-    "novelmania.readListButton": {
-        "description": "Text from 'read this list button'.",
-        "message": "Read this list!"
-    },
-    "novelmania.readNewsButton": {
-        "description": "Text from 'read this news button'.",
-        "message": "Read this news!"
-    },
-    "novelmania.visitUserProfileButton": {
-        "description": "Text from 'spy on this user button'. Naughty, naughty...",
-        "message": "Spy on this user!"
-    }
+  "novelmania.volume": {
+    "description": "Text for when user's reading a novel with volumes.",
+    "message": "Volume"
+  },
+  "novelmania.book": {
+    "description": "Text for when user's reading a novel with books.",
+    "message": "Book"
+  },
+  "novelmania.viewingProfile": {
+    "description": "Text for when user's visualizing someone's profile.",
+    "message": "Viewing profile"
+  },
+  "novelmania.lists": {
+    "description": "Text for when user's visualizing 'lists' page.",
+    "message": "listas"
+  },
+  "novelmania.news": {
+    "description": "Text for when user's visualizing 'news' page.",
+    "message": "news"
+  },
+  "novelmania.genre": {
+    "description": "Text for when user's browsing genres.",
+    "message": "genres"
+  },
+  "novelmania.novel": {
+    "description": "Just a placeholder for a novel title. It doesn't matter what it is, it will be replaced by the actual title.",
+    "message": "novel"
+  },
+  "novelmania.readNovelButton": {
+    "description": "",
+    "message": "Read this novel!"
+  },
+  "novelmania.readChapterButton": {
+    "description": "Text from 'reading chapter button'. Call to read along!",
+    "message": "Read this chapter!"
+  },
+  "novelmania.visitWebsiteButton": {
+    "description": "Text from 'visit website button'.",
+    "message": "Visit this website!"
+  },
+  "novelmania.readListButton": {
+    "description": "Text from 'read this list button'.",
+    "message": "Read this list!"
+  },
+  "novelmania.readNewsButton": {
+    "description": "Text from 'read this news button'.",
+    "message": "Read this news!"
+  },
+  "novelmania.visitUserProfileButton": {
+    "description": "Text from 'spy on this user button'. Naughty, naughty...",
+    "message": "Spy on this user!"
+  }
 }
