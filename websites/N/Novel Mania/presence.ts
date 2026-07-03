@@ -102,7 +102,7 @@ presence.on('UpdateData', async () => {
           presenceData.details = `${strings.browse} ${privacyCheck(decodeURIComponent(searchTerm))}`
         }
 
-        // Extrai nomes dos filtros - apenas se houver busca ou query params
+        /* Extract query params while searching for some novel */
         if (searchTerm || window.location.search) {
           const badges = document.querySelectorAll('span.inline-flex.rounded-full.border')
           if (badges.length > 0) {
