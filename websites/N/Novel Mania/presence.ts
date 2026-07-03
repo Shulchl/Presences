@@ -3,7 +3,8 @@ import { ActivityType, Assets } from 'premid'
 const presence = new Presence({
   clientId: '738522217221980222',
 })
-const browsingTimestamp = Math.floor(Date.now() / 1000)
+let browsingTimestamp = Math.floor(Date.now() / 1000)
+
 enum ActivityAssets {
   Logo = 'https://cdn.rcd.gg/PreMiD/websites/N/Novel%20Mania/assets/logo.png',
 }
@@ -94,7 +95,6 @@ presence.on('UpdateData', async () => {
       if (!part2) { /* Searching some novel */
         presenceData.details = `${strings.browse}`
         presenceData.state = privacyCheck(getPageTitle())
-
         const params = new URLSearchParams(window.location.search)
         const searchTerm = (document.querySelector('input[name="q"]') as HTMLInputElement)?.value || params.get('q')
 
@@ -127,7 +127,6 @@ presence.on('UpdateData', async () => {
         presenceData.details = `${strings.reading} ${privacyCheck(novelName)}`
         presenceData.state = `${privacyCheck(currentChapTitle)} -  ${privacyCheck(noveltype)}`
         presenceData.smallImageKey = Assets.Reading
-
         buttons = [
           {
             label: strings.readNovelButton,
@@ -143,7 +142,6 @@ presence.on('UpdateData', async () => {
       if (part2) { /* At some novel's page */
         const novelName = document.querySelector('#main > div > h1')?.textContent || strings.novel
         presenceData.state = ` ${strings.view} ${privacyCheck(novelName)}`
-
         buttons = [
           {
             label: strings.readNovelButton,
@@ -157,6 +155,7 @@ presence.on('UpdateData', async () => {
       if (!part2) {
         presenceData.state = `${strings.browse} ${strings.lists}`
         presenceData.smallImageKey = Assets.Reading
+
         break
       }
 
@@ -206,15 +205,14 @@ presence.on('UpdateData', async () => {
       break
   }
 
-  if (showButtons && buttons && (cleanPath === '/' || !hideInfo))
-    presenceData.buttons = buttons
-
   // Set the activity
   if (presenceData.state) {
-    presence.setActivity(presenceData)
-
     if (!showTime)
       delete presenceData.startTimestamp
+    if (showButtons && buttons && (cleanPath === '/' || !hideInfo))
+      presenceData.buttons = buttons
+    presence.setActivity(presenceData)
+
   }
   else {
     presence.clearActivity()
