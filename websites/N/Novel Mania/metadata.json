@@ -11,6 +11,7 @@
   ],
   "description": {
     "en": "Read webnovels in Portuguese anywhere and anytime.",
+    "nl": "Lees overal en altijd webnovels in het Portugees.",
     "pt-br": "Leia webnovels em português a qualquer momento e a qualquer hora."
   },
   "url": "novelmania.com.br",
@@ -22,6 +23,8 @@
   "category": "other",
   "tags": [
     "novel",
+    "mania",
+    "translator",
     "lightnovel",
     "light novel",
     "webnovel",
