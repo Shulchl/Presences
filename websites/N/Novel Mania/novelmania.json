@@ -13,7 +13,7 @@
   },
   "novelmania.lists": {
     "description": "Text for when user's visualizing 'lists' page.",
-    "message": "listas"
+    "message": "lists"
   },
   "novelmania.news": {
     "description": "Text for when user's visualizing 'news' page.",
@@ -28,7 +28,7 @@
     "message": "novel"
   },
   "novelmania.readNovelButton": {
-    "description": "",
+    "description": "Text from 'viewing novel's button'.",
     "message": "Read this novel!"
   },
   "novelmania.readChapterButton": {
