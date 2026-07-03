@@ -3,7 +3,7 @@ import { ActivityType, Assets } from 'premid'
 const presence = new Presence({
   clientId: '738522217221980222',
 })
-let browsingTimestamp = Math.floor(Date.now() / 1000)
+const browsingTimestamp = Math.floor(Date.now() / 1000)
 
 enum ActivityAssets {
   Logo = 'https://cdn.rcd.gg/PreMiD/websites/N/Novel%20Mania/assets/logo.png',
@@ -207,12 +207,13 @@ presence.on('UpdateData', async () => {
 
   // Set the activity
   if (presenceData.state) {
-    if (!showTime)
+    if (!showTime) {
       delete presenceData.startTimestamp
-    if (showButtons && buttons && (cleanPath === '/' || !hideInfo))
+    }
+    if (showButtons && buttons && (cleanPath === '/' || !hideInfo)) {
       presenceData.buttons = buttons
+    }
     presence.setActivity(presenceData)
-
   }
   else {
     presence.clearActivity()
