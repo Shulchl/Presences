@@ -49,7 +49,7 @@ presence.on('UpdateData', async () => {
 
   const presenceData: PresenceData = {
     largeImageKey: ActivityAssets.Logo,
-    startTimestamp: showTime ? browsingTimestamp : undefined,
+    startTimestamp: browsingTimestamp,
     type: ActivityType.Watching
 
   }
