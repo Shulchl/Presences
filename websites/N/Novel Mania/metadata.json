@@ -22,17 +22,18 @@
   "color": "#008cff",
   "category": "other",
   "tags": [
-    "novel",
-    "mania",
-    "translator",
+    "novel-mania",
+    "translation",
     "lightnovel",
-    "light novel",
+    "light-novel-translation",
     "webnovel",
-    "web novel",
+    "web-novel-translation",
     "reader",
     "scanlator",
-    "translation",
-    "book"
+    "novel-translation",
+    "book",
+    "books",
+    "book-translation"
   ],
   "settings": [
     {

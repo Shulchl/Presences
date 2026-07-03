@@ -38,19 +38,18 @@ presence.on('UpdateData', async () => {
     presence.getSetting<boolean>('showButtons') || true,
     presence.getSetting<boolean>('showTimestamp') || true,
     presence.getSetting<boolean>('hideInfo') || false,
-    presence.getSetting<string>('lang').catch(() => 'pt')
-  ]);
+    presence.getSetting<string>('lang').catch(() => 'pt'),
+  ])
 
   if (oldUserLanguage !== userLanguage) {
     oldUserLanguage = userLanguage
     strings = await getStrings()
   }
 
-
   const presenceData: PresenceData = {
     largeImageKey: ActivityAssets.Logo,
     startTimestamp: browsingTimestamp,
-    type: ActivityType.Watching
+    type: ActivityType.Watching,
 
   }
   const { pathname, origin } = window.location
@@ -67,7 +66,7 @@ presence.on('UpdateData', async () => {
   switch (part1) {
     case '':
       if (cleanPath === '/') {
-        presenceData.state = strings.home;
+        presenceData.state = strings.home
 
         buttons = [
           {
@@ -81,11 +80,11 @@ presence.on('UpdateData', async () => {
     case 'u': /* Seeing some user profile */
       if (part2) {
         presenceData.details = `${strings.profile}`
-        presenceData.state = privacyCheck(getPageTitle());
+        presenceData.state = privacyCheck(getPageTitle())
         buttons = [
           {
             label: strings.visitUserProfileButton,
-            url: origin + `/u/${part2}`,
+            url: `${origin}/u/${part2}`,
           },
         ]
       }
@@ -93,61 +92,62 @@ presence.on('UpdateData', async () => {
 
     case 'novels':
       if (!part2) { /* Searching some novel */
-        presenceData.details = `${strings.browse}`;
-        presenceData.state = privacyCheck(getPageTitle());
+        presenceData.details = `${strings.browse}`
+        presenceData.state = privacyCheck(getPageTitle())
 
-        const params = new URLSearchParams(window.location.search);
-        const searchTerm = (document.querySelector('input[name="q"]') as HTMLInputElement)?.value || params.get('q');
+        const params = new URLSearchParams(window.location.search)
+        const searchTerm = (document.querySelector('input[name="q"]') as HTMLInputElement)?.value || params.get('q')
 
         if (searchTerm) {
-          presenceData.details = `${strings.browse} ${privacyCheck(decodeURIComponent(searchTerm))}`;
+          presenceData.details = `${strings.browse} ${privacyCheck(decodeURIComponent(searchTerm))}`
         }
 
         // Extrai nomes dos filtros - apenas se houver busca ou query params
         if (searchTerm || window.location.search) {
-          const badges = document.querySelectorAll('span.inline-flex.rounded-full.border');
+          const badges = document.querySelectorAll('span.inline-flex.rounded-full.border')
           if (badges.length > 0) {
-            const visibleFilters: string[] = [];
+            const visibleFilters: string[] = []
             for (let i = 0; i < badges.length; i++) {
-              const text = badges[i]?.childNodes[0]?.textContent?.trim();
-              if (text) visibleFilters.push(text);
+              const text = badges[i]?.childNodes[0]?.textContent?.trim()
+              if (text)
+                visibleFilters.push(text)
             }
             if (visibleFilters.length) {
-              presenceData.state = privacyCheck(visibleFilters.join(', '));
+              presenceData.state = privacyCheck(visibleFilters.join(', '))
             }
           }
         }
         break
       }
       if (part3 === 'capitulos' && part4) { /* Reading some novel's chapter */
-        const novelName = document.querySelector("#conteudo-principal > div > header > div > p")?.textContent || part2?.split('-').slice(0, 2).join(' ') || strings.novel;
-        const noveltype = document.querySelector("#conteudo-principal > div > main > div > div > header > p")?.textContent || part4?.split('-').slice(0, 2).join(' ') || strings.volume;
-        const currentChapTitle = document.querySelector("#reader-chapter-title")?.textContent || novelName;
+        const novelName = document.querySelector('#conteudo-principal > div > header > div > p')?.textContent || part2?.split('-').slice(0, 2).join(' ') || strings.novel
+        const noveltype = document.querySelector('#conteudo-principal > div > main > div > div > header > p')?.textContent || part4?.split('-').slice(0, 2).join(' ') || strings.volume
+        const currentChapTitle = document.querySelector('#reader-chapter-title')?.textContent || novelName
 
-        presenceData.details = `${strings.reading} ${privacyCheck(novelName)}`;
-        presenceData.state = `${privacyCheck(currentChapTitle)} -  ${privacyCheck(noveltype)}`;
+        presenceData.details = `${strings.reading} ${privacyCheck(novelName)}`
+        presenceData.state = `${privacyCheck(currentChapTitle)} -  ${privacyCheck(noveltype)}`
         presenceData.smallImageKey = Assets.Reading
 
         buttons = [
           {
             label: strings.readNovelButton,
-            url: origin + `/novels/${part2}`,
+            url: `${origin}/novels/${part2}`,
           },
           {
             label: strings.readChapterButton,
-            url: origin + `/novels/${part2}/capitulos/${part4}`,
+            url: `${origin}/novels/${part2}/capitulos/${part4}`,
           },
         ]
         break
       }
       if (part2) { /* At some novel's page */
-        const novelName = document.querySelector("#main > div > h1")?.textContent || strings.novel
-        presenceData.state = ` ${strings.view} ${privacyCheck(novelName)}`;
+        const novelName = document.querySelector('#main > div > h1')?.textContent || strings.novel
+        presenceData.state = ` ${strings.view} ${privacyCheck(novelName)}`
 
         buttons = [
           {
             label: strings.readNovelButton,
-            url: origin + `/novels/${part2}`,
+            url: `${origin}/novels/${part2}`,
           },
         ]
       }
@@ -155,53 +155,53 @@ presence.on('UpdateData', async () => {
 
     case 'listas': /* Searching some lists */
       if (!part2) {
-        presenceData.state = `${strings.browse} ${strings.lists}`;
+        presenceData.state = `${strings.browse} ${strings.lists}`
         presenceData.smallImageKey = Assets.Reading
         break
       }
 
-      presenceData.details = `${strings.view} ${strings.lists}`;
-      presenceData.state = `${privacyCheck(getPageTitle())} - ${privacyCheck(document.querySelector("#main > div > div:nth-child(2) > a")?.textContent || strings.novel)}`;
+      presenceData.details = `${strings.view} ${strings.lists}`
+      presenceData.state = `${privacyCheck(getPageTitle())} - ${privacyCheck(document.querySelector('#main > div > div:nth-child(2) > a')?.textContent || strings.novel)}`
       presenceData.smallImageKey = Assets.Reading
 
       buttons = [
         {
           label: strings.readListButton,
-          url: origin + `/listas/${part2}`,
+          url: `${origin}/listas/${part2}`,
         },
       ]
       break
 
     case 'noticias':
-      if (!part2) {  /* Searching some news */
-        presenceData.details = `${strings.reading} ${strings.news}`; /* reading news list */
-        presenceData.state = `${privacyCheck(getPageTitle())}`;
+      if (!part2) { /* Searching some news */
+        presenceData.details = `${strings.reading} ${strings.news}` /* reading news list */
+        presenceData.state = `${privacyCheck(getPageTitle())}`
         presenceData.smallImageKey = Assets.Reading
         break
       }
 
-      presenceData.details = `${strings.reading} ${strings.news}`; /* reading a news */
-      presenceData.state = `${privacyCheck(getPageTitle())}`;
+      presenceData.details = `${strings.reading} ${strings.news}` /* reading a news */
+      presenceData.state = `${privacyCheck(getPageTitle())}`
       presenceData.smallImageKey = Assets.Reading
 
       buttons = [
         {
           label: strings.readNewsButton,
-          url: origin + `/noticias/${part2}`,
+          url: `${origin}/noticias/${part2}`,
         },
       ]
       break
 
     case 'genero': /* Browsing some genres */
       if (part2) {
-        presenceData.details = `${strings.browse} ${strings.genre}`;
-        presenceData.state = privacyCheck(getPageTitle());
+        presenceData.details = `${strings.browse} ${strings.genre}`
+        presenceData.state = privacyCheck(getPageTitle())
         presenceData.smallImageKey = Assets.Reading
       }
       break
 
     default: /* At any other page, it doesn't matter */
-      presenceData.state = `${strings.view} ${privacyCheck(getPageTitle())}`;
+      presenceData.state = `${strings.view} ${privacyCheck(getPageTitle())}`
       presenceData.smallImageKey = Assets.Reading
       break
   }
@@ -215,8 +215,8 @@ presence.on('UpdateData', async () => {
 
     if (!showTime)
       delete presenceData.startTimestamp
-
-  } else {
+  }
+  else {
     presence.clearActivity()
   }
 })
