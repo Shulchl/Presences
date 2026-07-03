@@ -1,0 +1,61 @@
+{
+  "$schema": "https://schemas.premid.app/metadata/1.17",
+  "apiVersion": 1,
+  "author": {
+    "name": "Shuichi",
+    "id": "179440483796385792"
+  },
+  "service": "Novel Mania",
+  "altnames": [
+    "NovelMania"
+  ],
+  "description": {
+    "en": "Read webnovels in Portuguese anywhere and anytime.",
+    "pt-br": "Leia webnovels em português a qualquer momento e a qualquer hora."
+  },
+  "url": "novelmania.com.br",
+  "regExp": "^https?[:][/][/]([a-z0-9-]+[.])*novelmania[.]com[.]br[/]",
+  "version": "2.0.0",
+  "logo": "https://cdn.rcd.gg/PreMiD/websites/N/Novel%20Mania/assets/logo.png",
+  "thumbnail": "https://cdn.rcd.gg/PreMiD/websites/N/Novel%20Mania/assets/thumbnail.jpg",
+  "color": "#008cff",
+  "category": "other",
+  "tags": [
+    "novel",
+    "lightnovel",
+    "light novel",
+    "webnovel",
+    "web novel",
+    "reader",
+    "scanlator",
+    "translation",
+    "book"
+  ],
+  "settings": [
+    {
+      "id": "lang",
+      "multiLanguage": true
+    },
+    {
+      "id": "hideInfo",
+      "title": "Privacy Mode",
+      "icon": "fas fa-compress-arrows-alt",
+      "value": false
+    },
+    {
+      "id": "showButtons",
+      "title": "Show Buttons",
+      "icon": "fas fa-compress-arrows-alt",
+      "value": true,
+      "if": {
+        "showInfo": false
+      }
+    },
+    {
+      "id": "showTimestamp",
+      "title": "Show Timestamp",
+      "icon": "fas fa-clock",
+      "value": true
+    }
+  ]
+}
