@@ -1,20 +1,4 @@
 {
-  "novelmania.volume": {
-    "description": "Text for when user's reading a novel with volumes.",
-    "message": "Volume"
-  },
-  "novelmania.book": {
-    "description": "Text for when user's reading a novel with books.",
-    "message": "Book"
-  },
-  "novelmania.viewingProfile": {
-    "description": "Text for when user's visualizing someone's profile.",
-    "message": "Viewing profile"
-  },
-  "novelmania.lists": {
-    "description": "Text for when user's visualizing 'lists' page.",
-    "message": "lists"
-  },
   "novelmania.news": {
     "description": "Text for when user's visualizing 'news' page.",
     "message": "news"
@@ -34,10 +18,6 @@
   "novelmania.readChapterButton": {
     "description": "Text from 'reading chapter button'. Call to read along!",
     "message": "Read this chapter!"
-  },
-  "novelmania.visitWebsiteButton": {
-    "description": "Text from 'visit website button'.",
-    "message": "Visit this website!"
   },
   "novelmania.readListButton": {
     "description": "Text from 'read this list button'.",
