@@ -12,31 +12,34 @@ function updateTimestampBySlug(slug: string) {
     browsingTimestamp = Math.floor(Date.now() / 1000)
   }
 }
+
 enum ActivityAssets {
   Logo = 'https://cdn.rcd.gg/PreMiD/websites/N/Novel%20Mania/assets/logo.png',
 }
+let largeImage: any = ActivityAssets.Logo
+
 async function getStrings() {
   return presence.getStrings({
-    browse: 'general.browsing',
-    home: 'general.viewHome',
     page: 'general.page',
-    viewPage: 'general.buttonViewPage',
-    privacy: 'general.privacy',
-    reading: 'general.reading',
     view: 'general.view',
-    chapter: 'general.chapter',
-    volume: 'novelmania.volume',
-    profile: 'general.viewProfile',
-    lists: 'general.viewAList',
-    search: 'general.search',
-    searchfor: 'general.searchFor',
     news: 'novelmania.news',
+    home: 'general.viewHome',
+    search: 'general.search',
     genre: 'novelmania.genre',
     novel: 'novelmania.novel',
-    readNovelButton: 'novelmania.readNovelButton',
-    readChapterButton: 'novelmania.readChapterButton',
+    browse: 'general.browsing',
+    privacy: 'general.privacy',
+    reading: 'general.reading',
+    chapter: 'general.chapter',
+    lists: 'general.viewAList',
+    volume: 'novelmania.volume',
+    profile: 'general.viewProfile',
+    searchfor: 'general.searchFor',
+    viewPage: 'general.buttonViewPage',
     readListButton: 'novelmania.readListButton',
     readNewsButton: 'novelmania.readNewsButton',
+    readNovelButton: 'novelmania.readNovelButton',
+    readChapterButton: 'novelmania.readChapterButton',
     visitUserProfileButton: 'novelmania.visitUserProfileButton',
   })
 }
@@ -57,15 +60,15 @@ presence.on('UpdateData', async () => {
   }
 
   const presenceData: PresenceData = {
-    largeImageKey: ActivityAssets.Logo,
+    largeImageKey: largeImage,
     type: ActivityType.Watching,
-
   }
   const { pathname, origin } = window.location
   const cleanPath = pathname.replace(/\/$/, '') || '/'
   const [part1, part2, part3, part4] = cleanPath.slice(1).split('/') // page, slug (if any), chapter (if any), volume/book  (if any)
   const getPageTitle = (): string => document.querySelector('#main h1')?.textContent || strings.novel
   let buttons: [ButtonData, ButtonData?] | undefined
+  let currentImage: any
 
   switch (part1) {
     case '':
@@ -79,11 +82,17 @@ presence.on('UpdateData', async () => {
         presenceData.state = `${strings.profile} ${strings.privacy}`
         break
       }
-      if (part2) {
-        presenceData.details = `${strings.profile}`
-        presenceData.state = getPageTitle()
-        buttons = [{ label: strings.visitUserProfileButton, url: `${origin}/u/${part2}` }]
+      presenceData.details = `${strings.profile}`
+      presenceData.state = getPageTitle()
+      buttons = [{ label: strings.visitUserProfileButton, url: `${origin}/u/${part2}` }]
+
+      currentImage = document.querySelector<HTMLImageElement>('#main img')?.src
+      if (currentImage) {
+        largeImage = currentImage
+        presenceData.largeImageKey = largeImage
+        presenceData.largeImageText = getPageTitle() || strings.profile
       }
+
       break
     case 'novels':
       if (!part2) { /* Searching some novel */
@@ -120,7 +129,7 @@ presence.on('UpdateData', async () => {
       if (part3 === 'capitulos' && part4) { /* Reading some novel's chapter */
         updateTimestampBySlug(`novel-${part2}-chapter-${part4}`)
         if (hideInfo) {
-          presenceData.state = `${strings.reading} ${strings.novel} ${strings.chapter}`
+          presenceData.state = `${strings.reading} ${strings.novel} ${strings.chapter.toLowerCase()}`
           break
         }
         const novelName = document.querySelector('#conteudo-principal > div > header > div > p')?.textContent || part2?.split('-').slice(0, 2).join(' ') || part2?.split('-').join(' ')
@@ -131,13 +140,30 @@ presence.on('UpdateData', async () => {
         presenceData.state = `${currentChapTitle} -  ${noveltype}`
 
         buttons = [{ label: strings.readNovelButton, url: `${origin}/novels/${part2}` }, { label: strings.readChapterButton, url: `${origin}/novels/${part2}/capitulos/${part4}` }]
+
+        if (largeImage) {
+          presenceData.largeImageKey = largeImage
+          presenceData.largeImageText = novelName
+        }
       }
 
       if (part2 && !part3) { /* At some novel's page */
         updateTimestampBySlug(`novel-${part2}`)
+        if (hideInfo) {
+          presenceData.state = `${strings.view} ${strings.novel}`
+          break
+        }
         const novelName = document.querySelector('#main > div > h1')?.textContent || part2.split('-').join(' ')
         presenceData.state = `${strings.view} ${novelName}`
-        buttons = [{ label: strings.readNewsButton, url: `${origin}/novels/${part2}` }]
+        buttons = [{ label: strings.readNovelButton, url: `${origin}/novels/${part2}` }]
+
+        currentImage = document.querySelector<HTMLImageElement>('#main img')?.src
+        if (currentImage && currentImage !== largeImage) {
+          largeImage = currentImage
+          presenceData.largeImageKey = largeImage
+          delete presenceData.largeImageText
+          presenceData.largeImageText = novelName // Its not showing and idk why
+        }
       }
       break
     case 'listas': /* Searching some lists */
@@ -149,6 +175,14 @@ presence.on('UpdateData', async () => {
         presenceData.state = getPageTitle() || listName
 
         buttons = [{ label: strings.readListButton, url: `${origin}/listas/${part2}` }]
+
+        currentImage = document.querySelector<HTMLImageElement>('#main img')?.src
+        if (currentImage && currentImage !== largeImage) {
+          largeImage = currentImage
+          presenceData.largeImageKey = largeImage
+          presenceData.largeImageText = getPageTitle() || listName
+        }
+
         break
       }
       presenceData.state = `${strings.lists}`
@@ -162,7 +196,7 @@ presence.on('UpdateData', async () => {
       if (!part2) { /* Searching some news */
         updateTimestampBySlug('news-browsing')
         presenceData.details = `${strings.reading} ${strings.news}` /* reading news list */
-        presenceData.state = `${getPageTitle()}`
+        presenceData.state = getPageTitle()
 
         break
       }
@@ -170,6 +204,14 @@ presence.on('UpdateData', async () => {
       presenceData.details = `${strings.reading} ${strings.news}` /* reading a news */
       presenceData.state = `${getPageTitle()}`
       buttons = [{ label: strings.readNewsButton, url: `${origin}/noticias/${part2}` }]
+
+      currentImage = document.querySelector<HTMLImageElement>('#main img')?.src
+      if (currentImage) {
+        largeImage = currentImage
+        presenceData.largeImageKey = largeImage
+        presenceData.largeImageText = getPageTitle() || largeImage
+      }
+
       break
     case 'genero': /* Browsing some genres */
       updateTimestampBySlug('genre-searching')
@@ -191,18 +233,34 @@ presence.on('UpdateData', async () => {
       presenceData.state = `${strings.view} ${getPageTitle()}`
 
       buttons = [{ label: strings.viewPage, url: origin + pathname }]
+
+      currentImage = document.querySelector<HTMLImageElement>('#main img')?.src
+      if (currentImage && currentImage !== largeImage) {
+        largeImage = currentImage
+        presenceData.largeImageKey = largeImage
+        presenceData.largeImageText = getPageTitle() || largeImage
+      }
+
       break
   }
-  if (showTime)
-    presenceData.startTimestamp = browsingTimestamp
-
+  // Someday I'll make it better.
+  if (!lastSlug.includes(`novel-${part2}`) && !lastSlug.includes('list-reading') && !lastSlug.includes('news-reading') && !lastSlug.includes('page-reading') && part1 === '/') {
+    largeImage = ActivityAssets.Logo
+    presenceData.largeImageKey = largeImage
+    delete presenceData.largeImageText
+  }
   if (presenceData.state) {
-    if (!showTime)
+    if (!showTime) {
       delete presenceData.startTimestamp
+    }
+    else {
+      presenceData.startTimestamp = browsingTimestamp
+    }
     if (showButtons && buttons && !hideInfo) {
       presenceData.smallImageKey = Assets.Reading
       presenceData.buttons = buttons
     }
+
     presence.setActivity(presenceData)
   }
   else {
