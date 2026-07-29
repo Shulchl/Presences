@@ -42,7 +42,7 @@
     {
       "id": "hideInfo",
       "title": "Privacy Mode",
-      "icon": "fas fa-compress-arrows-alt",
+      "icon": "fad fa-user-secret",
       "value": false
     },
     {
@@ -57,7 +57,7 @@
     {
       "id": "showTimestamp",
       "title": "Show Timestamp",
-      "icon": "fas fa-clock",
+      "icon": "fad fa-stopwatch",
       "value": true
     }
   ]

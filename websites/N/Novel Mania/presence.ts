@@ -16,7 +16,7 @@ function updateTimestampBySlug(slug: string) {
 enum ActivityAssets {
   Logo = 'https://cdn.rcd.gg/PreMiD/websites/N/Novel%20Mania/assets/logo.png',
 }
-let largeImage: any = ActivityAssets.Logo
+let defaultCover: ActivityAssets = ActivityAssets.Logo
 
 async function getStrings() {
   return presence.getStrings({
@@ -28,14 +28,13 @@ async function getStrings() {
     genre: 'novelmania.genre',
     novel: 'novelmania.novel',
     browse: 'general.browsing',
-    privacy: 'general.privacy',
     reading: 'general.reading',
     chapter: 'general.chapter',
     lists: 'general.viewAList',
-    volume: 'novelmania.volume',
     profile: 'general.viewProfile',
     searchfor: 'general.searchFor',
     viewPage: 'general.buttonViewPage',
+    privacyProfile: 'general.viewAProfile',
     readListButton: 'novelmania.readListButton',
     readNewsButton: 'novelmania.readNewsButton',
     readNovelButton: 'novelmania.readNovelButton',
@@ -45,6 +44,9 @@ async function getStrings() {
 }
 let oldUserLanguage: string | null = null
 let strings: Awaited<ReturnType<typeof getStrings>>
+
+// As there's no way to select a cover while reading,
+// I'm storing the novel's name as a variable outside the loop just dont reset
 
 presence.on('UpdateData', async () => {
   const [showButtons, showTime, hideInfo, userLanguage] = await Promise.all([
@@ -60,7 +62,7 @@ presence.on('UpdateData', async () => {
   }
 
   const presenceData: PresenceData = {
-    largeImageKey: largeImage,
+    largeImageKey: defaultCover,
     type: ActivityType.Watching,
   }
   const { pathname, origin } = window.location
@@ -68,33 +70,35 @@ presence.on('UpdateData', async () => {
   const [part1, part2, part3, part4] = cleanPath.slice(1).split('/') // page, slug (if any), chapter (if any), volume/book  (if any)
   const getPageTitle = (): string => document.querySelector('#main h1')?.textContent || strings.novel
   let buttons: [ButtonData, ButtonData?] | undefined
-  let currentImage: any
+  let currentCover: any
+  let currentPageTitle: string | undefined
 
   switch (part1) {
-    case '':
+    case '': {
       if (cleanPath === '/') {
         presenceData.state = strings.home
       }
       break
-    case 'u': /* Seeing some user profile */
+    }
+    case 'u':{ /* Seeing some user profile */
       updateTimestampBySlug('u')
       if (hideInfo) {
-        presenceData.state = `${strings.profile} ${strings.privacy}`
+        presenceData.state = `${strings.privacyProfile}`
         break
       }
-      presenceData.details = `${strings.profile}`
-      presenceData.state = getPageTitle()
-      buttons = [{ label: strings.visitUserProfileButton, url: `${origin}/u/${part2}` }]
 
-      currentImage = document.querySelector<HTMLImageElement>('#main img')?.src
-      if (currentImage) {
-        largeImage = currentImage
-        presenceData.largeImageKey = largeImage
-        presenceData.largeImageText = getPageTitle() || strings.profile
+      currentCover = document.querySelector<HTMLImageElement>('#main img')?.src
+      currentPageTitle = getPageTitle()
+      presenceData.state = `${strings.profile} ${currentPageTitle}`
+
+      if (currentCover && currentCover !== defaultCover) {
+        defaultCover = currentCover
       }
 
+      buttons = [{ label: strings.visitUserProfileButton, url: `${origin}/u/${part2}` }]
       break
-    case 'novels':
+    }
+    case 'novels': {
       if (!part2) { /* Searching some novel */
         updateTimestampBySlug('novel-searching')
         if (hideInfo) {
@@ -141,10 +145,7 @@ presence.on('UpdateData', async () => {
 
         buttons = [{ label: strings.readNovelButton, url: `${origin}/novels/${part2}` }, { label: strings.readChapterButton, url: `${origin}/novels/${part2}/capitulos/${part4}` }]
 
-        if (largeImage) {
-          presenceData.largeImageKey = largeImage
-          presenceData.largeImageText = novelName
-        }
+        currentPageTitle = novelName
       }
 
       if (part2 && !part3) { /* At some novel's page */
@@ -155,18 +156,17 @@ presence.on('UpdateData', async () => {
         }
         const novelName = document.querySelector('#main > div > h1')?.textContent || part2.split('-').join(' ')
         presenceData.state = `${strings.view} ${novelName}`
-        buttons = [{ label: strings.readNovelButton, url: `${origin}/novels/${part2}` }]
 
-        currentImage = document.querySelector<HTMLImageElement>('#main img')?.src
-        if (currentImage && currentImage !== largeImage) {
-          largeImage = currentImage
-          presenceData.largeImageKey = largeImage
-          delete presenceData.largeImageText
-          presenceData.largeImageText = novelName // Its not showing and idk why
+        currentCover = document.querySelector<HTMLImageElement>('#main img')?.src
+        if (currentCover && currentCover !== defaultCover) {
+          currentPageTitle = novelName // Its not showing and idk why
+          defaultCover = currentCover
         }
+        buttons = [{ label: strings.readNovelButton, url: `${origin}/novels/${part2}` }]
       }
       break
-    case 'listas': /* Searching some lists */
+    }
+    case 'listas':{
       updateTimestampBySlug('list-browsing')
       if (!hideInfo && part2) {
         updateTimestampBySlug('list-reading')
@@ -174,46 +174,45 @@ presence.on('UpdateData', async () => {
         presenceData.details = strings.lists
         presenceData.state = getPageTitle() || listName
 
-        buttons = [{ label: strings.readListButton, url: `${origin}/listas/${part2}` }]
-
-        currentImage = document.querySelector<HTMLImageElement>('#main img')?.src
-        if (currentImage && currentImage !== largeImage) {
-          largeImage = currentImage
-          presenceData.largeImageKey = largeImage
-          presenceData.largeImageText = getPageTitle() || listName
+        currentCover = document.querySelector<HTMLImageElement>('#main img')?.src
+        if (currentCover && currentCover !== defaultCover) {
+          defaultCover = currentCover
+          currentPageTitle = getPageTitle() || listName
         }
 
+        buttons = [{ label: strings.readListButton, url: `${origin}/listas/${part2}` }]
         break
       }
       presenceData.state = `${strings.lists}`
       break
-    case 'noticias':
+    }
+    case 'noticias': {
       updateTimestampBySlug('news-reading')
       if (hideInfo) {
         presenceData.state = `${strings.view} ${strings.news}`
         break
       }
+      const newsTitle = getPageTitle()
       if (!part2) { /* Searching some news */
         updateTimestampBySlug('news-browsing')
-        presenceData.details = `${strings.reading} ${strings.news}` /* reading news list */
-        presenceData.state = getPageTitle()
+        presenceData.state = `${strings.reading} ${strings.news}` /* reading news list */
 
         break
       }
 
       presenceData.details = `${strings.reading} ${strings.news}` /* reading a news */
-      presenceData.state = `${getPageTitle()}`
-      buttons = [{ label: strings.readNewsButton, url: `${origin}/noticias/${part2}` }]
+      presenceData.state = `${newsTitle}`
 
-      currentImage = document.querySelector<HTMLImageElement>('#main img')?.src
-      if (currentImage) {
-        largeImage = currentImage
-        presenceData.largeImageKey = largeImage
-        presenceData.largeImageText = getPageTitle() || largeImage
+      currentCover = document.querySelector<HTMLImageElement>('#main img')?.src
+      if (currentCover) {
+        defaultCover = currentCover
+        currentPageTitle = newsTitle || defaultCover
       }
 
+      buttons = [{ label: strings.readNewsButton, url: `${origin}/noticias/${part2}` }]
       break
-    case 'genero': /* Browsing some genres */
+    }
+    case 'genero':{
       updateTimestampBySlug('genre-searching')
       if (hideInfo) {
         presenceData.state = `${strings.view} ${strings.genre}`
@@ -224,6 +223,7 @@ presence.on('UpdateData', async () => {
         presenceData.state = getPageTitle()
       }
       break
+    }
     default: /* At any other page, it doesn't matter */
       updateTimestampBySlug('page-reading')
       if (hideInfo) {
@@ -232,35 +232,34 @@ presence.on('UpdateData', async () => {
       }
       presenceData.state = `${strings.view} ${getPageTitle()}`
 
-      buttons = [{ label: strings.viewPage, url: origin + pathname }]
-
-      currentImage = document.querySelector<HTMLImageElement>('#main img')?.src
-      if (currentImage && currentImage !== largeImage) {
-        largeImage = currentImage
-        presenceData.largeImageKey = largeImage
-        presenceData.largeImageText = getPageTitle() || largeImage
+      currentCover = document.querySelector<HTMLImageElement>('#main img')?.src
+      if (currentCover && currentCover !== defaultCover) {
+        defaultCover = currentCover
+        currentPageTitle = getPageTitle() || defaultCover
       }
+      buttons = [{ label: strings.viewPage, url: origin + pathname }]
 
       break
   }
-  // Someday I'll make it better.
-  if (!lastSlug.includes(`novel-${part2}`) && !lastSlug.includes('list-reading') && !lastSlug.includes('news-reading') && !lastSlug.includes('page-reading') && part1 === '/') {
-    largeImage = ActivityAssets.Logo
-    presenceData.largeImageKey = largeImage
+
+  presenceData.startTimestamp = browsingTimestamp
+
+  if (buttons && showButtons && !hideInfo) {
+    presenceData.smallImageKey = Assets.Reading
+    presenceData.buttons = buttons
+  }
+  if (!showTime) {
+    delete presenceData.startTimestamp
+  }
+  if (!part1 || !part2) {
+    defaultCover = ActivityAssets.Logo
     delete presenceData.largeImageText
   }
+  else {
+    presenceData.largeImageText = currentPageTitle
+  }
+  presenceData.largeImageKey = defaultCover
   if (presenceData.state) {
-    if (!showTime) {
-      delete presenceData.startTimestamp
-    }
-    else {
-      presenceData.startTimestamp = browsingTimestamp
-    }
-    if (showButtons && buttons && !hideInfo) {
-      presenceData.smallImageKey = Assets.Reading
-      presenceData.buttons = buttons
-    }
-
     presence.setActivity(presenceData)
   }
   else {
